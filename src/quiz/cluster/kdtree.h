@@ -58,7 +58,7 @@ struct KdTree
 	{
 		std::vector<int> ids;
 //		std::cout << "Target Pt: x = "  << target[0] << " y = " << target[1] << std::endl;
-		if (targetId == 11)
+		if (targetId == 19)
 		{
 			int stopit = 1;
 		}
