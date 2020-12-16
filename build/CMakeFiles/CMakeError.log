@@ -1,0 +1,72 @@
+Detecting C [-std=c11] compiler features failed to compile with the following output:
+Change Dir: /home/workspace/SFND_Lidar_Obstacle_Detection/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_c8e05/fast"
+/usr/bin/make -f CMakeFiles/cmTC_c8e05.dir/build.make CMakeFiles/cmTC_c8e05.dir/build
+make[1]: Entering directory '/home/workspace/SFND_Lidar_Obstacle_Detection/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_c8e05.dir/feature_tests.c.o
+/usr/bin/c99-gcc   -std=c11 -o CMakeFiles/cmTC_c8e05.dir/feature_tests.c.o   -c /home/workspace/SFND_Lidar_Obstacle_Detection/build/CMakeFiles/feature_tests.c
+c99-gcc called with non ISO C99 option -std=c11
+CMakeFiles/cmTC_c8e05.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_c8e05.dir/feature_tests.c.o' failed
+make[1]: *** [CMakeFiles/cmTC_c8e05.dir/feature_tests.c.o] Error 1
+make[1]: Leaving directory '/home/workspace/SFND_Lidar_Obstacle_Detection/build/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_c8e05/fast' failed
+make: *** [cmTC_c8e05/fast] Error 2
+
+
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/workspace/SFND_Lidar_Obstacle_Detection/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_bbc80/fast"
+/usr/bin/make -f CMakeFiles/cmTC_bbc80.dir/build.make CMakeFiles/cmTC_bbc80.dir/build
+make[1]: Entering directory '/home/workspace/SFND_Lidar_Obstacle_Detection/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_bbc80.dir/CheckSymbolExists.c.o
+/usr/bin/c99-gcc    -o CMakeFiles/cmTC_bbc80.dir/CheckSymbolExists.c.o   -c /home/workspace/SFND_Lidar_Obstacle_Detection/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_bbc80
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bbc80.dir/link.txt --verbose=1
+/usr/bin/c99-gcc      -rdynamic CMakeFiles/cmTC_bbc80.dir/CheckSymbolExists.c.o  -o cmTC_bbc80 
+CMakeFiles/cmTC_bbc80.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_bbc80.dir/build.make:86: recipe for target 'cmTC_bbc80' failed
+make[1]: *** [cmTC_bbc80] Error 1
+make[1]: Leaving directory '/home/workspace/SFND_Lidar_Obstacle_Detection/build/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_bbc80/fast' failed
+make: *** [cmTC_bbc80/fast] Error 2
+
+File /home/workspace/SFND_Lidar_Obstacle_Detection/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/workspace/SFND_Lidar_Obstacle_Detection/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_f5007/fast"
+/usr/bin/make -f CMakeFiles/cmTC_f5007.dir/build.make CMakeFiles/cmTC_f5007.dir/build
+make[1]: Entering directory '/home/workspace/SFND_Lidar_Obstacle_Detection/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_f5007.dir/CheckFunctionExists.c.o
+/usr/bin/c99-gcc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_f5007.dir/CheckFunctionExists.c.o   -c /usr/local/share/cmake-3.13/Modules/CheckFunctionExists.c
+Linking C executable cmTC_f5007
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f5007.dir/link.txt --verbose=1
+/usr/bin/c99-gcc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_f5007.dir/CheckFunctionExists.c.o  -o cmTC_f5007 -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_f5007.dir/build.make:86: recipe for target 'cmTC_f5007' failed
+make[1]: *** [cmTC_f5007] Error 1
+make[1]: Leaving directory '/home/workspace/SFND_Lidar_Obstacle_Detection/build/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_f5007/fast' failed
+make: *** [cmTC_f5007/fast] Error 2
+
+
