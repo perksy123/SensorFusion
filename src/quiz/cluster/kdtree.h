@@ -42,11 +42,11 @@ struct KdTree
 		{
 			if (point[dataIdx] < (*node)->point[dataIdx])
 			{
-				insertHelper(&(*node)->left, point, id, (++dataIdx) % 2);
+				insertHelper(&(*node)->left, point, id, (++dataIdx) % 3);
 			}
 			else
 			{
-				insertHelper(&(*node)->right, point, id, (++dataIdx) % 2);
+				insertHelper(&(*node)->right, point, id, (++dataIdx) % 3);
 			}
 
 		}
@@ -57,7 +57,7 @@ struct KdTree
 	std::vector<int> search(std::vector<float> target, float distanceTol)
 	{
 		std::vector<int> ids;
-		std::cout << "Target Pt: x = "  << target[0] << " y = " << target[1] << std::endl;
+//		std::cout << "Target Pt: x = "  << target[0] << " y = " << target[1] << std::endl;
 		searchHelper(root, ids, target, distanceTol, 0);
 		return ids;
 	}
@@ -69,14 +69,16 @@ struct KdTree
 			return;
 		}
 
-		std::cout << "Considering Node: " << node->id << " Node.x = " << node->point[0] << " Node.y = " << node->point[1] << std::endl;
+//		std::cout << "Considering Node: " << node->id << " Node.x = " << node->point[0] << " Node.y = " << node->point[1] << std::endl;
 		float xsep = node->point[0] - target[0];
 		float ysep = node->point[1] - target[1];
+		float zsep = node->point[2] - target[2];
 		if ( (std::abs(xsep) <= distanceTol) &&
-			 (std::abs(ysep) <= distanceTol) )
+			 (std::abs(ysep) <= distanceTol) &&
+			 (std::abs(zsep) <= distanceTol) )
 		{
 			// Calculate the actual distance separation
-			float sep = std::sqrt(xsep*xsep + ysep*ysep);
+			float sep = std::sqrt(xsep*xsep + ysep*ysep + zsep*zsep);
 			if (sep < distanceTol)
 				ids.push_back(node->id);
 		}
@@ -84,13 +86,13 @@ struct KdTree
 		// Check if we need to consider the less than division
 		if (target[dataIdx] - distanceTol < node->point[dataIdx])
 		{
-			searchHelper(node->left, ids, target, distanceTol, (++dataIdx) % 2);
+			searchHelper(node->left, ids, target, distanceTol, (++dataIdx) % 3);
 		}
 
 		// Check if we need to consider the greater than division
 		if (target[dataIdx] + distanceTol >= node->point[dataIdx])
 		{
-			searchHelper(node->right, ids, target, distanceTol, (++dataIdx) % 2);
+			searchHelper(node->right, ids, target, distanceTol, (++dataIdx) % 3);
 		}
 	}
 
