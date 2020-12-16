@@ -81,7 +81,7 @@ void Proximity(int point, std::vector<int> &cluster, const std::vector<std::vect
 	{
 		processedPoints[point] = true;
 		cluster.push_back(point);
-		std::vector<int> nearbyPoints = tree->search(points[point], distanceTol);
+		std::vector<int> nearbyPoints = tree->search(points[point], point, distanceTol);
 		for(std::vector<int>::iterator it = nearbyPoints.begin(); it != nearbyPoints.end(); ++it)
 		{
 			Proximity(*it, cluster, points, processedPoints, tree, distanceTol);
@@ -129,7 +129,7 @@ int main ()
 //	std::vector<std::vector<float>> points = { {-6.2,7}, {-6.3,8.4}, {-5.2,7.1}, {-5.7,6.3}, {7.2,6.1}, {8.0,5.3}, {7.2,7.1}, {0.2,-7.1}, {1.7,-6.9}, {-1.2,-7.2}, {2.2,-8.9} };
 	std::vector<std::vector<float>> points = { {-6.2,7,0}, {-6.3,8.4,0}, {-5.2,7.1,0}, {-5.7,6.3,0}, {7.2,6.1,0}, {8.0,5.3,0}, {7.2,7.1,0}, {0.2,-7.1,0}, {1.7,-6.9,0}, {-1.2,-7.2,0}, {2.2,-8.9,0}, // Original Data (now 3D)
 											   {-1, 1, 0}, {0, 1, 0}, {1, 1, 0}, {1, 0, 0}, {1, -1, 0}, {0, -1, 0}, {-1, -1, 0}, {-1, 0, 0},													     // Additional 0 elevation cluster
-											   {-1.2,1.2,4,1}, {0.2, 1.2, 4.0}, {1.2, 1, 2, 3.9}, {1.2, 0.2, 4.2}, {1.2, -1.2, 4.3}, {0.2, -1.2, 3.8}, {-1.2, -1.2, 4.4}, {-1.2, 0.2, 3.8}			 // Additional +4 elevation cluster
+											   {-1.2,1.2,4.1}, {0.2, 1.2, 4.0}, {1.2, 1, 2, 3.9}, {1.2, 0.2, 4.2}, {1.2, -1.2, 4.3}, {0.2, -1.2, 3.8}, {-1.2, -1.2, 4.4}, {-1.2, 0.2, 3.8}			 // Additional +4 elevation cluster
 	};
 	//std::vector<std::vector<float>> points = { {-6.2,7}, {-6.3,8.4}, {-5.2,7.1}, {-5.7,6.3} };
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = CreateData(points);
@@ -139,14 +139,14 @@ int main ()
     for (int i=0; i<points.size(); i++) 
     	tree->insert(points[i],i); 
 
- // 	int it = 0;
+// 		int it = 0;
 //  	render2DTree(tree->root,viewer,window, it);
   
-  	std::cout << "Test Search" << std::endl;
-  	std::vector<int> nearby = tree->search({-6,7},3.0);
-  	for(int index : nearby)
-      std::cout << index << ",";
-  	std::cout << std::endl;
+//  	std::cout << "Test Search" << std::endl;
+//  	std::vector<int> nearby = tree->search({-6,7},3.0);
+//  	for(int index : nearby)
+//      std::cout << index << ",";
+//  	std::cout << std::endl;
 
   	// Time segmentation process
   	auto startTime = std::chrono::steady_clock::now();
