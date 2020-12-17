@@ -42,11 +42,11 @@ struct KdTree
 		{
 			if (point[dataIdx] < (*node)->point[dataIdx])
 			{
-				insertHelper(&(*node)->left, point, id, (++dataIdx) % 3);
+				insertHelper(&(*node)->left, point, id, (dataIdx + 1) % 3);
 			}
 			else
 			{
-				insertHelper(&(*node)->right, point, id, (++dataIdx) % 3);
+				insertHelper(&(*node)->right, point, id, (dataIdx + 1) % 3);
 			}
 
 		}
@@ -90,13 +90,13 @@ struct KdTree
 		// Check if we need to consider the less than division
 		if (target[dataIdx] - distanceTol < node->point[dataIdx])
 		{
-			searchHelper(node->left, ids, target, distanceTol, (++dataIdx) % 3);
+			searchHelper(node->left, ids, target, distanceTol, (dataIdx + 1) % 3);
 		}
 
 		// Check if we need to consider the greater than division
 		if (target[dataIdx] + distanceTol >= node->point[dataIdx])
 		{
-			searchHelper(node->right, ids, target, distanceTol, (++dataIdx) % 3);
+			searchHelper(node->right, ids, target, distanceTol, (dataIdx + 1) % 3);
 		}
 	}
 
