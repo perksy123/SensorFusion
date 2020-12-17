@@ -3,7 +3,7 @@
 #include "processPointClouds.h"
 #include "Generator.h"
 #include "CloudPlane.h"
-
+#include "kdtree.h"
 
 //constructor:
 template<typename PointT>
@@ -165,6 +165,22 @@ std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT
 }
 
 template<typename PointT>
+void ProcessPointClouds<PointT>::Proximity(int point, std::vector<int> &cluster, typename pcl::PointCloud<PointT>::Ptr cloud, std::vector<bool> &processedPoints, KdTree<PointT> *tree, float distanceTol)
+{
+	if (processedPoints[point] == false)
+	{
+		processedPoints[point] = true;
+		cluster.push_back(point);
+		std::vector<int> nearbyPoints = tree->search(cloud->at(point), distanceTol);
+		for(std::vector<int>::iterator it = nearbyPoints.begin(); it != nearbyPoints.end(); ++it)
+		{
+			Proximity(*it, cluster, cloud, processedPoints, tree, distanceTol);
+		}
+	}
+}
+
+
+template<typename PointT>
 std::vector<typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::Clustering(typename pcl::PointCloud<PointT>::Ptr cloud, float clusterTolerance, int minSize, int maxSize)
 {
 
@@ -174,7 +190,7 @@ std::vector<typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::C
     std::vector<typename pcl::PointCloud<PointT>::Ptr> clusters;
 
     // TODO:: Fill in the function to perform euclidean clustering to group detected obstacles
-    typename pcl::search::KdTree<PointT>::Ptr tree (new pcl::search::KdTree<PointT>);
+/*    typename pcl::search::KdTree<PointT>::Ptr tree (new pcl::search::KdTree<PointT>);
     tree->setInputCloud(cloud);
 
     std::vector<pcl::PointIndices> clusterIndices;
@@ -201,7 +217,42 @@ std::vector<typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::C
 
     auto endTime = std::chrono::steady_clock::now();
     auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
-    std::cout << "clustering took " << elapsedTime.count() << " milliseconds and found " << clusters.size() << " clusters" << std::endl;
+    std::cout << "clustering took " << elapsedTime.count() << " milliseconds and found " << clusters.size() << " clusters" << std::endl;*/
+
+	KdTree<PointT>* tree = new KdTree<PointT>;
+  
+    for (int i = 0; i < cloud->points.size(); i++) 
+    	tree->insert(cloud->at(i), i); 
+
+	// Point index based array of processed flags.
+	std::vector<bool> processedPoints(cloud->points.size(), false);
+	std::vector<std::vector<int>> clusterIds;
+
+	for (int point = 0; point < cloud->points.size(); ++point)
+	{
+		if (processedPoints[point] == false)
+		{
+			std::vector<int> cluster;
+			Proximity(point, cluster, cloud, processedPoints, tree, clusterTolerance);
+			clusterIds.push_back(cluster);
+		}
+	}
+
+    for (std::vector<std::vector<int>>::const_iterator clusterIt = clusterIds.begin(); clusterIt != clusterIds.end(); ++clusterIt)
+    {
+         const std::vector<int> &ids = *clusterIt;
+
+        if (ids.size() >= minSize && ids.size() <= maxSize)
+        {
+            typename pcl::PointCloud<PointT>::Ptr clusterPts(new pcl::PointCloud<PointT>());
+
+            for (std::vector<int>::const_iterator idsIt = ids.begin(); idsIt != ids.end(); ++idsIt)
+            {
+                clusterPts->points.push_back(cloud->points.at(*idsIt));
+            }
+            clusters.push_back(clusterPts);
+        }
+    }
 
     return clusters;
 }
