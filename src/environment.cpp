@@ -49,8 +49,8 @@ void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
     // TODO:: Create lidar sensor 
     boost::shared_ptr<Lidar> iansLidar(new Lidar(cars, 0.0));
     pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud = iansLidar->scan();
-    //renderRays(viewer, iansLidar->position, pointCloud);
-    //renderPointCloud(viewer, pointCloud, "Cloud 9");
+//    renderRays(viewer, iansLidar->position, pointCloud);
+//    renderPointCloud(viewer, pointCloud, "Cloud 9");
 
     // TODO:: Create point processor
     boost::shared_ptr<ProcessPointClouds<pcl::PointXYZ>> pcProcessor(new ProcessPointClouds<pcl::PointXYZ>());
@@ -71,7 +71,9 @@ void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
         std::cout << "Cluster size ";
         pcProcessor->numPoints(cluster);
         renderPointCloud(viewer, cluster, "obj Cloud"+std::to_string(clusterId), colours[clusterId]);
-        Box box = pcProcessor->BoundingBox(cluster);
+//        Box box = pcProcessor->BoundingBox(cluster);
+//        renderBox(viewer, box, clusterId);
+        BoxQ box = pcProcessor->BoundingBoxQ(cluster);
         renderBox(viewer, box, clusterId);
         ++clusterId;
     }

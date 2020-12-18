@@ -4,6 +4,7 @@
 #include "Generator.h"
 #include "CloudPlane.h"
 #include "kdtree.h"
+#include "pcl/common/pca.h"
 
 //constructor:
 template<typename PointT>
@@ -286,6 +287,41 @@ Box ProcessPointClouds<PointT>::BoundingBox(typename pcl::PointCloud<PointT>::Pt
 
     return box;
 }
+
+template<typename PointT>
+BoxQ ProcessPointClouds<PointT>::BoundingBoxQ(typename pcl::PointCloud<PointT>::Ptr cluster)
+{
+    BoxQ box;
+    pcl::PCA<PointT> pca;
+
+    typename pcl::PointCloud<PointT>::Ptr projectedPCACloud(new pcl::PointCloud<PointT>);
+    pca.setInputCloud(cluster);
+    pca.project(*cluster, *projectedPCACloud); 
+    Eigen::Matrix3f &cloudEigenVectors = pca.getEigenVectors();
+    Eigen::Vector4f &cloudCentroid = pca.getMean();
+
+    Eigen::Matrix4f projectionTransform(Eigen::Matrix4f::Identity());
+    projectionTransform.block<3,3>(0,0) = cloudEigenVectors.transpose();
+    projectionTransform.block<3,1>(0,3) = -1.0f * (projectionTransform.block<3,3>(0,0) * cloudCentroid.head<3>());
+    typename pcl::PointCloud<PointT>::Ptr cloudPointsProjected (new pcl::PointCloud<PointT>);
+    pcl::transformPointCloud(*cluster, *cloudPointsProjected, projectionTransform);
+
+    PointT minPoint;
+    PointT maxPoint;
+
+    pcl::getMinMax3D(*cloudPointsProjected, minPoint, maxPoint);
+    const Eigen::Vector3f meanDiagonal = 0.5f * (maxPoint.getVector3fMap() + minPoint.getVector3fMap());
+
+    const Eigen::Quaternionf bboxQuaternion(cloudEigenVectors);
+    box.bboxQuaternion = bboxQuaternion;
+    box.bboxTransform = cloudEigenVectors * meanDiagonal + cloudCentroid.head<3>();
+    box.cube_height = maxPoint.z - minPoint.z;
+    box.cube_length = maxPoint.y - minPoint.y;
+    box.cube_width = maxPoint.x - minPoint.x;
+
+    return box;
+}
+
 
 
 template<typename PointT>

@@ -42,6 +42,7 @@ public:
     void Proximity(int point, std::vector<int> &cluster, typename pcl::PointCloud<PointT>::Ptr cloud, std::vector<bool> &processedPoints, KdTree<PointT> *tree, float distanceTol);
 
     Box BoundingBox(typename pcl::PointCloud<PointT>::Ptr cluster);
+    BoxQ BoundingBoxQ(typename pcl::PointCloud<PointT>::Ptr cluster);
 
     void savePcd(typename pcl::PointCloud<PointT>::Ptr cloud, std::string file);
 

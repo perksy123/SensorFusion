@@ -35,6 +35,8 @@ CloudPlane.h
 /home/workspace/SFND_Lidar_Obstacle_Detection/src/CloudPlane.h
 kdtree.h
 /home/workspace/SFND_Lidar_Obstacle_Detection/src/kdtree.h
+pcl/common/pca.h
+/home/workspace/SFND_Lidar_Obstacle_Detection/src/pcl/common/pca.h
 
 /home/workspace/SFND_Lidar_Obstacle_Detection/src/processPointClouds.h
 pcl/io/pcd_io.h
@@ -1350,6 +1352,18 @@ pcl/common/copy_point.h
 pcl/point_types.h
 -
 
+/usr/include/pcl-1.7/pcl/common/impl/pca.hpp
+pcl/point_types.h
+-
+pcl/common/centroid.h
+-
+pcl/common/eigen.h
+-
+pcl/common/transforms.h
+-
+pcl/exceptions.h
+-
+
 /usr/include/pcl-1.7/pcl/common/impl/projection_matrix.hpp
 pcl/cloud_iterator.h
 -
@@ -1370,6 +1384,14 @@ pcl/exceptions.h
 locale
 -
 pcl/common/impl/io.hpp
+-
+
+/usr/include/pcl-1.7/pcl/common/pca.h
+pcl/pcl_base.h
+-
+pcl/pcl_macros.h
+-
+pcl/common/impl/pca.hpp
 -
 
 /usr/include/pcl-1.7/pcl/common/point_tests.h
