@@ -85,7 +85,8 @@ void CityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer)
     
     boost::shared_ptr<ProcessPointClouds<pcl::PointXYZI>> pcProcessorI(new ProcessPointClouds<pcl::PointXYZI>());
     pcl::PointCloud<pcl::PointXYZI>::Ptr inputCloud = pcProcessorI->loadPcd("../src/sensors/data/pcd/data_1/0000000000.pcd");
-    renderPointCloud(viewer, inputCloud, "Input Cloud");
+    pcl::PointCloud<pcl::PointXYZI>::Ptr filteredCloud = pcProcessorI->FilterCloud(inputCloud, 0.1, {-20, -10, -3, 1.0}, {20, 10, 5, 1.0});
+    renderPointCloud(viewer, filteredCloud, "Input Cloud");
 }
 
 

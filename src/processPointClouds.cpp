@@ -30,13 +30,50 @@ typename pcl::PointCloud<PointT>::Ptr ProcessPointClouds<PointT>::FilterCloud(ty
     // Time segmentation process
     auto startTime = std::chrono::steady_clock::now();
 
-    // TODO:: Fill in the function to do voxel grid point reduction and region based filtering
+    typename pcl::PointCloud<PointT>::Ptr filtered(new pcl::PointCloud<PointT>());
+    typename pcl::PointCloud<PointT>::Ptr cropped(new pcl::PointCloud<PointT>());
+ 
+    std::cout << "Filtering Input cloud size " << cloud->points.size() << std::endl;
+
+    pcl::VoxelGrid<PointT> sor;
+    sor.setInputCloud(cloud);
+    sor.setLeafSize(filterRes, filterRes, filterRes);
+    sor.filter(*filtered);
+
+    std::cout << "Voxel Filtered cloud size " << filtered->points.size() << std::endl;
+
+    pcl::CropBox<PointT> crop(true);
+    crop.setMin(minPoint);
+    crop.setMax(maxPoint);
+    crop.setInputCloud(filtered);
+    crop.filter(*cropped);
+
+    std::cout << "Cropped cloud size " << cropped->points.size() << std::endl;
+
+    std::vector<int> indices;
+    pcl::CropBox<PointT> roofPts(true);
+    roofPts.setMin(Eigen::Vector4f(-1.5, -1.7, -1.0, 1));
+    roofPts.setMax(Eigen::Vector4f(2.6, 1.7, -0.4, 1));
+    roofPts.setInputCloud(cropped);
+    roofPts.filter(indices);
+
+    std::cout << "Roof filtering removed  " << indices.size() <<  " points" << std::endl;
+
+    pcl::PointIndices::Ptr roofInliers (new pcl::PointIndices);
+    for (std::vector<int>::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        roofInliers->indices.push_back(*it);
+
+    pcl::ExtractIndices<PointT> ex;
+    ex.setInputCloud(cropped);
+    ex.setIndices(roofInliers);
+    ex.setNegative(true);
+    ex.filter(*cropped);
 
     auto endTime = std::chrono::steady_clock::now();
     auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
     std::cout << "filtering took " << elapsedTime.count() << " milliseconds" << std::endl;
 
-    return cloud;
+    return cropped;
 
 }
 
@@ -44,7 +81,6 @@ typename pcl::PointCloud<PointT>::Ptr ProcessPointClouds<PointT>::FilterCloud(ty
 template<typename PointT>
 std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::SeparateClouds(pcl::PointIndices::Ptr inliers, typename pcl::PointCloud<PointT>::Ptr cloud) 
 {
-    // TODO: Create two new point clouds, one cloud with obstacles and other with segmented plane
     typename pcl::PointCloud<PointT>::Ptr inlierCloud(new pcl::PointCloud<PointT>(*cloud, inliers->indices));
     typename pcl::PointCloud<PointT>::Ptr outlierCloud(new pcl::PointCloud<PointT>());
     
