@@ -46,13 +46,11 @@ void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
     bool renderScene = false;
     std::vector<Car> cars = initHighway(renderScene, viewer);
     
-    // TODO:: Create lidar sensor 
     boost::shared_ptr<Lidar> iansLidar(new Lidar(cars, 0.0));
     pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud = iansLidar->scan();
 //    renderRays(viewer, iansLidar->position, pointCloud);
 //    renderPointCloud(viewer, pointCloud, "Cloud 9");
 
-    // TODO:: Create point processor
     boost::shared_ptr<ProcessPointClouds<pcl::PointXYZ>> pcProcessor(new ProcessPointClouds<pcl::PointXYZ>());
    
     // Find the ground plane in the point cloud
@@ -71,12 +69,23 @@ void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
         std::cout << "Cluster size ";
         pcProcessor->numPoints(cluster);
         renderPointCloud(viewer, cluster, "obj Cloud"+std::to_string(clusterId), colours[clusterId]);
-//        Box box = pcProcessor->BoundingBox(cluster);
-//        renderBox(viewer, box, clusterId);
-        BoxQ box = pcProcessor->BoundingBoxQ(cluster);
+        Box box = pcProcessor->BoundingBox(cluster);
         renderBox(viewer, box, clusterId);
+//        BoxQ box = pcProcessor->BoundingBoxQ(cluster);
+//        renderBox(viewer, box, clusterId);
         ++clusterId;
     }
+}
+
+void CityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer)
+{
+    // ----------------------------------------------------
+    // -----Open 3D viewer and display a City Block -----
+    // ----------------------------------------------------
+    
+    boost::shared_ptr<ProcessPointClouds<pcl::PointXYZI>> pcProcessorI(new ProcessPointClouds<pcl::PointXYZI>());
+    pcl::PointCloud<pcl::PointXYZI>::Ptr inputCloud = pcProcessorI->loadPcd("../src/sensors/data/pcd/data_1/0000000000.pcd");
+    renderPointCloud(viewer, inputCloud, "Input Cloud");
 }
 
 
@@ -111,7 +120,8 @@ int main (int argc, char** argv)
     pcl::visualization::PCLVisualizer::Ptr viewer (new pcl::visualization::PCLVisualizer ("3D Viewer"));
     CameraAngle setAngle = XY;
     initCamera(setAngle, viewer);
-    simpleHighway(viewer);
+    CityBlock(viewer);
+//   simpleHighway(viewer);
 
     while (!viewer->wasStopped ())
     {

@@ -288,17 +288,23 @@ Box ProcessPointClouds<PointT>::BoundingBox(typename pcl::PointCloud<PointT>::Pt
     return box;
 }
 
+// I can't make this work......
+// I think its giving me rotations ion all 3 dimensions. I don;t have time to sort out how to just find the minimum
+// bounded bos rotated just about Z. Also the boxes dont align with the cluster points. Again, I don;t know why.
 template<typename PointT>
 BoxQ ProcessPointClouds<PointT>::BoundingBoxQ(typename pcl::PointCloud<PointT>::Ptr cluster)
 {
     BoxQ box;
-    pcl::PCA<PointT> pca;
 
     typename pcl::PointCloud<PointT>::Ptr projectedPCACloud(new pcl::PointCloud<PointT>);
+    pcl::PCA<PointT> pca;
+
     pca.setInputCloud(cluster);
     pca.project(*cluster, *projectedPCACloud); 
     Eigen::Matrix3f &cloudEigenVectors = pca.getEigenVectors();
-    Eigen::Vector4f &cloudCentroid = pca.getMean();
+ 
+    Eigen::Vector4f cloudCentroid;
+    pcl::compute3DCentroid(*cluster, cloudCentroid);
 
     Eigen::Matrix4f projectionTransform(Eigen::Matrix4f::Identity());
     projectionTransform.block<3,3>(0,0) = cloudEigenVectors.transpose();
