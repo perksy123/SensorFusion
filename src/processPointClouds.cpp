@@ -174,11 +174,11 @@ std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT
 
 	    pcl::PointIndices::Ptr iterationRes(new pcl::PointIndices());
 		int index = 0;
-		for (pcl::PointCloud<pcl::PointXYZ>::iterator it = cloud->begin(); it != cloud->end(); ++it)
+		for (typename pcl::PointCloud<PointT>::iterator it = cloud->begin(); it != cloud->end(); ++it)
 		{
 			if (!plane.Contains(index))
 			{
-				pcl::PointXYZ &point = *it;
+				PointT &point = *it;
 
 				if (plane.IsInlier(point, distanceThreshold))
 				{
