@@ -19,7 +19,7 @@ class Node
 	:	point(arr), id(setId), left(nullptr), right(nullptr)
 	{}
 
-	PointT point;
+	PointT point;		// Poss more efficient to store a reference, but then the Node becomes dependent of the lifetime of the point cloud. Maybe not a good idea.
 	int id;
 	Node* left;
 	Node* right;

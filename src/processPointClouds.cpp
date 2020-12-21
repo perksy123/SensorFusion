@@ -26,7 +26,6 @@ void ProcessPointClouds<PointT>::numPoints(typename pcl::PointCloud<PointT>::Ptr
 template<typename PointT>
 typename pcl::PointCloud<PointT>::Ptr ProcessPointClouds<PointT>::FilterCloud(typename pcl::PointCloud<PointT>::Ptr cloud, float filterRes, Eigen::Vector4f minPoint, Eigen::Vector4f maxPoint)
 {
-
     // Time segmentation process
     auto startTime = std::chrono::steady_clock::now();
 
@@ -77,7 +76,6 @@ typename pcl::PointCloud<PointT>::Ptr ProcessPointClouds<PointT>::FilterCloud(ty
 
 }
 
-
 template<typename PointT>
 std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::SeparateClouds(pcl::PointIndices::Ptr inliers, typename pcl::PointCloud<PointT>::Ptr cloud) 
 {
@@ -100,57 +98,9 @@ std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT
         index++;
     }
 
-/*    typename pcl::PointCloud<PointT>::Ptr inlierCloud(new pcl::PointCloud<PointT>());
-    typename pcl::PointCloud<PointT>::Ptr outlierCloud(new pcl::PointCloud<PointT>());
-
-    pcl::ExtractIndices<PointT> extract;
-    extract.setInputCloud(cloud);
-    extract.setIndices(inliers);
-
-    extract.setNegative(false);
-    extract.filter(*inlierCloud);
-
-    extract.setNegative(true);
-    extract.filter(*outlierCloud);*/
-
     std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> segResult(inlierCloud, outlierCloud);
     return segResult;
 }
-
-
-/*template<typename PointT>
-std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::SegmentPlane(typename pcl::PointCloud<PointT>::Ptr cloud, int maxIterations, float distanceThreshold)
-{
-    // Time segmentation process
-    auto startTime = std::chrono::steady_clock::now();
-	pcl::PointIndices::Ptr inliers(new pcl::PointIndices());
-
-    // TODO:: Fill in this function to find inliers for the cloud.
-    pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
- 
-    pcl::SACSegmentation<PointT> seg;
-    seg.setOptimizeCoefficients(true);
-    seg.setModelType(pcl::SACMODEL_PLANE);
-    seg.setMethodType(pcl::SAC_RANSAC);
-    seg.setDistanceThreshold(distanceThreshold);
-    seg.setMaxIterations(maxIterations);
-    seg.setInputCloud(cloud);
-
-    seg.segment(*inliers, *coefficients);
-
-    if (inliers->indices.size() == 0)
-    {
-        std::cout << "Could not find a plane in the point cloud" << std::endl;
-    }
-
-    auto endTime = std::chrono::steady_clock::now();
-    auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
-    std::cout << "plane segmentation took " << elapsedTime.count() << " milliseconds" << std::endl;
- 
-    std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> segResult = SeparateClouds(inliers,cloud);
-
-    return segResult;
-}*/
 
 template<typename PointT>
 std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::SegmentPlane(typename pcl::PointCloud<PointT>::Ptr cloud, int maxIterations, float distanceThreshold)
@@ -222,45 +172,13 @@ void ProcessPointClouds<PointT>::Proximity(int point, std::vector<int> &cluster,
 	}
 }
 
-
 template<typename PointT>
 std::vector<typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::Clustering(typename pcl::PointCloud<PointT>::Ptr cloud, float clusterTolerance, int minSize, int maxSize)
 {
-
     // Time clustering process
     auto startTime = std::chrono::steady_clock::now();
 
     std::vector<typename pcl::PointCloud<PointT>::Ptr> clusters;
-
-    // TODO:: Fill in the function to perform euclidean clustering to group detected obstacles
-/*    typename pcl::search::KdTree<PointT>::Ptr tree (new pcl::search::KdTree<PointT>);
-    tree->setInputCloud(cloud);
-
-    std::vector<pcl::PointIndices> clusterIndices;
-    pcl::EuclideanClusterExtraction<PointT> ec;
-    ec.setClusterTolerance(clusterTolerance);
-    ec.setMinClusterSize(minSize);
-    ec.setMaxClusterSize(maxSize);
-    ec.setSearchMethod(tree);
-    ec.setInputCloud(cloud);
-    ec.extract(clusterIndices);
-
-    for (std::vector<pcl::PointIndices>::iterator it = clusterIndices.begin(); it != clusterIndices.end(); ++it)
-    {
-        typename pcl::PointCloud<PointT>::Ptr cluster(new pcl::PointCloud<PointT>());
-
-        pcl::PointIndices clusterIndices = *it;
-        for (std::vector<int>::iterator indicesIt = clusterIndices.indices.begin(); indicesIt != clusterIndices.indices.end(); ++indicesIt)
-        {
-            cluster->push_back(cloud->at(*indicesIt));
-        }
-
-        clusters.push_back(cluster);
-    }
-
-    auto endTime = std::chrono::steady_clock::now();
-    auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
-    std::cout << "clustering took " << elapsedTime.count() << " milliseconds and found " << clusters.size() << " clusters" << std::endl;*/
 
 	KdTree<PointT>* tree = new KdTree<PointT>;
   
@@ -308,7 +226,6 @@ std::vector<typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::C
 template<typename PointT>
 Box ProcessPointClouds<PointT>::BoundingBox(typename pcl::PointCloud<PointT>::Ptr cluster)
 {
-
     // Find bounding box for one of the clusters
     PointT minPoint, maxPoint;
     pcl::getMinMax3D(*cluster, minPoint, maxPoint);
@@ -325,8 +242,8 @@ Box ProcessPointClouds<PointT>::BoundingBox(typename pcl::PointCloud<PointT>::Pt
 }
 
 // I can't make this work......
-// I think its giving me rotations ion all 3 dimensions. I don;t have time to sort out how to just find the minimum
-// bounded bos rotated just about Z. Also the boxes dont align with the cluster points. Again, I don;t know why.
+// I think its giving me rotations in all 3 dimensions. I don't have time to sort out how to just find the minimum
+// bounded box rotated just about Z. Also the boxe axes don't align with the cluster points. Again, I don't know why.
 template<typename PointT>
 BoxQ ProcessPointClouds<PointT>::BoundingBoxQ(typename pcl::PointCloud<PointT>::Ptr cluster)
 {
@@ -364,15 +281,12 @@ BoxQ ProcessPointClouds<PointT>::BoundingBoxQ(typename pcl::PointCloud<PointT>::
     return box;
 }
 
-
-
 template<typename PointT>
 void ProcessPointClouds<PointT>::savePcd(typename pcl::PointCloud<PointT>::Ptr cloud, std::string file)
 {
     pcl::io::savePCDFileASCII (file, *cloud);
     std::cerr << "Saved " << cloud->points.size () << " data points to "+file << std::endl;
 }
-
 
 template<typename PointT>
 typename pcl::PointCloud<PointT>::Ptr ProcessPointClouds<PointT>::loadPcd(std::string file)
@@ -389,7 +303,6 @@ typename pcl::PointCloud<PointT>::Ptr ProcessPointClouds<PointT>::loadPcd(std::s
     return cloud;
 }
 
-
 template<typename PointT>
 std::vector<boost::filesystem::path> ProcessPointClouds<PointT>::streamPcd(std::string dataPath)
 {
@@ -402,3 +315,84 @@ std::vector<boost::filesystem::path> ProcessPointClouds<PointT>::streamPcd(std::
     return paths;
 
 }
+
+// Old code....
+
+// PCD clustering
+/*    typename pcl::search::KdTree<PointT>::Ptr tree (new pcl::search::KdTree<PointT>);
+    tree->setInputCloud(cloud);
+
+    std::vector<pcl::PointIndices> clusterIndices;
+    pcl::EuclideanClusterExtraction<PointT> ec;
+    ec.setClusterTolerance(clusterTolerance);
+    ec.setMinClusterSize(minSize);
+    ec.setMaxClusterSize(maxSize);
+    ec.setSearchMethod(tree);
+    ec.setInputCloud(cloud);
+    ec.extract(clusterIndices);
+
+    for (std::vector<pcl::PointIndices>::iterator it = clusterIndices.begin(); it != clusterIndices.end(); ++it)
+    {
+        typename pcl::PointCloud<PointT>::Ptr cluster(new pcl::PointCloud<PointT>());
+
+        pcl::PointIndices clusterIndices = *it;
+        for (std::vector<int>::iterator indicesIt = clusterIndices.indices.begin(); indicesIt != clusterIndices.indices.end(); ++indicesIt)
+        {
+            cluster->push_back(cloud->at(*indicesIt));
+        }
+
+        clusters.push_back(cluster);
+    }
+
+    auto endTime = std::chrono::steady_clock::now();
+    auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+    std::cout << "clustering took " << elapsedTime.count() << " milliseconds and found " << clusters.size() << " clusters" << std::endl;*/
+
+// PCD Segment plane
+/*template<typename PointT>
+std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::SegmentPlane(typename pcl::PointCloud<PointT>::Ptr cloud, int maxIterations, float distanceThreshold)
+{
+    // Time segmentation process
+    auto startTime = std::chrono::steady_clock::now();
+	pcl::PointIndices::Ptr inliers(new pcl::PointIndices());
+
+    // TODO:: Fill in this function to find inliers for the cloud.
+    pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
+ 
+    pcl::SACSegmentation<PointT> seg;
+    seg.setOptimizeCoefficients(true);
+    seg.setModelType(pcl::SACMODEL_PLANE);
+    seg.setMethodType(pcl::SAC_RANSAC);
+    seg.setDistanceThreshold(distanceThreshold);
+    seg.setMaxIterations(maxIterations);
+    seg.setInputCloud(cloud);
+
+    seg.segment(*inliers, *coefficients);
+
+    if (inliers->indices.size() == 0)
+    {
+        std::cout << "Could not find a plane in the point cloud" << std::endl;
+    }
+
+    auto endTime = std::chrono::steady_clock::now();
+    auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+    std::cout << "plane segmentation took " << elapsedTime.count() << " milliseconds" << std::endl;
+ 
+    std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> segResult = SeparateClouds(inliers,cloud);
+
+    return segResult;
+}*/
+
+// PCD Separate clouds
+/*    typename pcl::PointCloud<PointT>::Ptr inlierCloud(new pcl::PointCloud<PointT>());
+    typename pcl::PointCloud<PointT>::Ptr outlierCloud(new pcl::PointCloud<PointT>());
+
+    pcl::ExtractIndices<PointT> extract;
+    extract.setInputCloud(cloud);
+    extract.setIndices(inliers);
+
+    extract.setNegative(false);
+    extract.filter(*inlierCloud);
+
+    extract.setNegative(true);
+    extract.filter(*outlierCloud);*/
