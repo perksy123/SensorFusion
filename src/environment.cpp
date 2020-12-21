@@ -147,4 +147,10 @@ int main (int argc, char** argv)
 
         viewer->spinOnce();
     }
+
+    if (pcProcessorI != nullptr)
+    {
+        delete pcProcessorI;
+        pcProcessorI = nullptr;
+    }
 }

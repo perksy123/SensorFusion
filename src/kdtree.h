@@ -19,7 +19,8 @@ class Node
 	:	point(arr), id(setId), left(nullptr), right(nullptr)
 	{}
 
-	PointT point;		// Poss more efficient to store a reference, but then the Node becomes dependent of the lifetime of the point cloud. Maybe not a good idea.
+	PointT point;		// Poss more efficient to store a reference/ptr, but then the Node becomes dependent of the lifetime of the point cloud. Maybe not a good idea.
+						// I've tested the performance difference and don't see any difference.
 	int id;
 	Node* left;
 	Node* right;
@@ -77,7 +78,7 @@ class KdTree
 				return;
 			}
 
-			float xsep = node->point.data[0] - target.data[0];
+			float xsep = node->point.data[0] - target.data[0];	// Makes assumptions on the structure/access of PointT coordinate data
 			float ysep = node->point.data[1] - target.data[1];
 			float zsep = node->point.data[2] - target.data[2];
 			if ( (std::abs(xsep) <= distanceTol) &&

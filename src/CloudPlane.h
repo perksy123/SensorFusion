@@ -71,7 +71,6 @@ class CloudPlane
         {
             // distance = |Ax + By + Cz + D| / sqrt(A*A + B*B + C*C)
             double pointDistance = std::abs(ACoeff * candidate.x + BCoeff * candidate.y + CCoeff * candidate.z + DCoeff) / std::sqrt(ACoeff * ACoeff + BCoeff * BCoeff + CCoeff * CCoeff);
-        //    std::cout << "Candidate x,y,z " <<  candidate.x << "," << candidate.y << "," << candidate.z << " distance = " << pointDistance << std::endl;
             return pointDistance < tolerance;
         }
 
